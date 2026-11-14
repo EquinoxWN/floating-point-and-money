@@ -1,0 +1,17 @@
+{
+  "name": "floating-point-and-money",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Why 0.1 + 0.2 isn't 0.3 and how that quietly loses money: number representation, rounding and currency handled correctly in Java, Python and JS.",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./src/index.js",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "lint": "node --check src/index.js && node --check src/floats.js && node --check src/money.js && node --check src/vectors.js && node --check src/conformance.js && node --check src/cli.js",
+    "report": "node src/cli.js report"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

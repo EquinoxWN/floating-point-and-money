@@ -1,0 +1,82 @@
+# Shared cases for the Money API (hand-written). "-" means the column is not used.
+# expected is the result's canonical text, a number (compare, minor) or error:<kind>
+# with kind one of parse, currency, overflow, mismatch.
+# op	a	a currency	b	b currency	expected
+parse	12.34	USD	-	-	12.34 USD
+parse	12.3	USD	-	-	12.30 USD
+parse	12	USD	-	-	12.00 USD
+parse	0.1	USD	-	-	0.10 USD
+parse	-0.05	USD	-	-	-0.05 USD
+parse	-0.00	USD	-	-	0.00 USD
+parse	007.50	EUR	-	-	7.50 EUR
+parse	1000	JPY	-	-	1000 JPY
+parse	1.234	KWD	-	-	1.234 KWD
+parse	0.5	GBP	-	-	0.50 GBP
+parse	92233720368547758.07	USD	-	-	92233720368547758.07 USD
+parse	-92233720368547758.07	USD	-	-	-92233720368547758.07 USD
+parse	9223372036854775807	JPY	-	-	9223372036854775807 JPY
+parse	12.345	USD	-	-	error:parse
+parse	12.340	USD	-	-	error:parse
+parse	1.5	JPY	-	-	error:parse
+parse	1.0	JPY	-	-	error:parse
+parse	+1	USD	-	-	error:parse
+parse	1e3	USD	-	-	error:parse
+parse	.5	USD	-	-	error:parse
+parse	5.	USD	-	-	error:parse
+parse	1,000.00	USD	-	-	error:parse
+parse	1 000	USD	-	-	error:parse
+parse	0x10	USD	-	-	error:parse
+parse	--1	USD	-	-	error:parse
+parse	NaN	USD	-	-	error:parse
+parse	Infinity	USD	-	-	error:parse
+parse	١٢	USD	-	-	error:parse
+parse	1	XXX	-	-	error:currency
+parse	1	usd	-	-	error:currency
+parse	92233720368547758.08	USD	-	-	error:overflow
+parse	-92233720368547758.08	USD	-	-	error:overflow
+parse	9223372036854775808	JPY	-	-	error:overflow
+parse	99999999999999999999999999	USD	-	-	error:overflow
+ofminor	1234	USD	-	-	12.34 USD
+ofminor	-5	USD	-	-	-0.05 USD
+ofminor	0	USD	-	-	0.00 USD
+ofminor	5	JPY	-	-	5 JPY
+ofminor	1	KWD	-	-	0.001 KWD
+ofminor	-1001	KWD	-	-	-1.001 KWD
+ofminor	9223372036854775807	USD	-	-	92233720368547758.07 USD
+ofminor	-9223372036854775808	USD	-	-	error:overflow
+ofminor	1	EURO	-	-	error:currency
+minor	12.34	USD	-	-	1234
+minor	-0.07	USD	-	-	-7
+minor	1000	JPY	-	-	1000
+minor	1.234	KWD	-	-	1234
+plus	0.10	USD	0.20	USD	0.30 USD
+plus	-1.50	USD	1.50	USD	0.00 USD
+plus	92233720368547758.06	USD	0.01	USD	92233720368547758.07 USD
+plus	92233720368547758.07	USD	0.01	USD	error:overflow
+plus	-92233720368547758.07	USD	-0.01	USD	error:overflow
+plus	1.00	USD	1.00	EUR	error:mismatch
+plus	1	JPY	1.000	KWD	error:mismatch
+minus	1.00	USD	0.90	USD	0.10 USD
+minus	0.30	USD	0.10	USD	0.20 USD
+minus	0.00	USD	0.01	USD	-0.01 USD
+minus	-92233720368547758.07	USD	0.01	USD	error:overflow
+minus	92233720368547758.07	USD	-0.01	USD	error:overflow
+minus	1.00	EUR	1.00	USD	error:mismatch
+times	19.99	USD	100	-	1999.00 USD
+times	1.10	USD	3	-	3.30 USD
+times	4.35	USD	100	-	435.00 USD
+times	0.01	USD	-3	-	-0.03 USD
+times	1.00	USD	0	-	0.00 USD
+times	-2.50	EUR	-2	-	5.00 EUR
+times	46116860184273879.03	USD	2	-	92233720368547758.06 USD
+times	92233720368547758.07	USD	2	-	error:overflow
+times	0.02	USD	4611686018427387904	-	error:overflow
+times	-0.01	USD	-9223372036854775807	-	92233720368547758.07 USD
+negate	-12.34	USD	-	-	12.34 USD
+negate	0.00	USD	-	-	0.00 USD
+negate	92233720368547758.07	USD	-	-	-92233720368547758.07 USD
+compare	0.10	USD	0.09	USD	1
+compare	0.09	USD	0.10	USD	-1
+compare	1	JPY	1	JPY	0
+compare	-0.01	USD	0.00	USD	-1
+compare	1.00	USD	1.00	EUR	error:mismatch

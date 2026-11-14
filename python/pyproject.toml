@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "floating-point-and-money"
+version = "0.1.0"
+description = "Why 0.1 + 0.2 isn't 0.3 and how that quietly loses money: number representation, rounding and currency handled correctly in Java, Python and JS."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11", "pip-audit>=2.7"]
+
+[project.scripts]
+fpm = "floating_point_and_money.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+floating_point_and_money = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["tests", "../spec"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests", "../spec"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+# Bugs, security (bandit), modern syntax, imports, naming and test style; `ruff format` owns line length.
+select = ["E", "W", "F", "I", "B", "UP", "S", "SIM", "RUF", "N", "C4", "PT", "RET", "PIE", "PERF", "BLE"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests use assert on purpose.
+"tests/**" = ["S101"]
